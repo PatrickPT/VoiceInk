@@ -45,9 +45,10 @@ build: setup
 
 # Run application
 run:
-	@echo "Looking for VoiceInk.app..."
-	@APP_PATH=$$(find "$$HOME/Library/Developer/Xcode/DerivedData" -name "VoiceInk.app" -type d | head -1) && \
-	if [ -n "$$APP_PATH" ]; then \
+	@echo "Finding and running the latest build of VoiceInk.app..."
+	@BUILD_DIR=$$(xcodebuild -showBuildSettings -project VoiceInk.xcodeproj -scheme VoiceInk -configuration Debug | grep -m 1 "BUILT_PRODUCTS_DIR =" | awk '{print $$3}') && \
+	APP_PATH="$$BUILD_DIR/VoiceInk.app" && \
+	if [ -d "$$APP_PATH" ]; then \
 		echo "Found app at: $$APP_PATH"; \
 		open "$$APP_PATH"; \
 	else \
@@ -68,7 +69,7 @@ help:
 	@echo "  whisper            Clone and build whisper.cpp XCFramework"
 	@echo "  setup              Copy whisper XCFramework to VoiceInk project"
 	@echo "  build              Build the VoiceInk Xcode project"
-	@echo "  run                Launch the built VoiceInk app"
+	@echo "  run                Find and launch the latest built VoiceInk app"
 	@echo "  dev                Build and run the app (for development)"
 	@echo "  all                Run full build process (default)"
 	@echo "  clean              Remove build artifacts"
